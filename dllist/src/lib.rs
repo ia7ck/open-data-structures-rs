@@ -1,4 +1,4 @@
-use std::ptr;
+use std::{alloc, ptr};
 
 use interface::List;
 
@@ -83,7 +83,10 @@ impl<T> DLList<T> {
         unsafe { (*prev_w).next = next_w }; // prev --> next
         unsafe { (*next_w).prev = prev_w }; // prev <-- next
 
+        // ref: https://doc.rust-lang.org/std/boxed/struct.Box.html#method.into_raw
         unsafe { ptr::drop_in_place(w) };
+        unsafe { alloc::dealloc(w as *mut u8, alloc::Layout::new::<Node<T>>()) };
+
         self.n -= 1;
         Some(x)
     }
