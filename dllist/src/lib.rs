@@ -129,6 +129,16 @@ impl<T> List<T> for DLList<T> {
     }
 }
 
+impl<T> Drop for DLList<T> {
+    fn drop(&mut self) {
+        while self.size() > 0 {
+            self.remove(self.size() - 1);
+        }
+        unsafe { ptr::drop_in_place(self.dummy) };
+        unsafe { alloc::dealloc(self.dummy as *mut u8, alloc::Layout::new::<Node<T>>()) };
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::DLList;
