@@ -56,6 +56,7 @@ where
     }
 
     fn pick_height() -> usize {
+        // 毎回 rng を生成しているためパフォーマンスが悪そう
         let mut small_rng = SmallRng::from_entropy();
         small_rng.gen_range(0..32)
     }
@@ -135,6 +136,7 @@ where
         let mut del = ptr::null_mut();
         let mut u = self.sentinel;
         for r in (0..=self.height).rev() {
+            // add のときとまったく同じ
             let delete_next_node = loop {
                 let next = unsafe { &*u }.next[r];
                 if next.is_null() {
