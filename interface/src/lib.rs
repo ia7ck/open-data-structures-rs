@@ -15,3 +15,11 @@ pub trait List<T> {
     fn add(&mut self, i: usize, x: T);
     fn remove(&mut self, i: usize) -> T;
 }
+
+pub trait SSet<T> {
+    fn size(&self) -> usize;
+    fn add(&mut self, x: T) -> bool;
+    fn remove(&mut self, x: &T) -> bool;
+    // lower bound
+    fn find(&self, x: &T) -> Option<&T>;
+}
