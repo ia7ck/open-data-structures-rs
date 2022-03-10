@@ -1,4 +1,8 @@
-use std::{alloc, ptr};
+use std::{
+    alloc,
+    fmt::{self, Formatter},
+    ptr,
+};
 
 use rand::{rngs::SmallRng, Rng, SeedableRng};
 
@@ -177,6 +181,31 @@ where
             debug_assert!(x.is_some());
             x
         }
+    }
+}
+
+impl<T> fmt::Debug for SkipListSSet<T>
+where
+    T: PartialOrd + fmt::Debug,
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let mut u = self.sentinel;
+        let h = unsafe { &*u }
+            .next
+            .iter()
+            .take_while(|v| !v.is_null())
+            .count();
+        write!(f, "~\t{}", "#".repeat(h))?;
+        writeln!(f)?;
+        u = unsafe { &*u }.next[0];
+        while !u.is_null() {
+            let h = unsafe { &*u }.height();
+            let x = unsafe { &*u }.x.as_ref().unwrap();
+            write!(f, "{:?}\t{}", x, "#".repeat(h))?;
+            writeln!(f)?;
+            u = unsafe { &*u }.next[0];
+        }
+        Ok(())
     }
 }
 
