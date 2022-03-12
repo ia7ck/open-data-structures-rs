@@ -3,4 +3,5 @@ members = [
     "interface",
     "sllist",
     "dllist",
+    "skiplist-sset",
 ]
