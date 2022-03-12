@@ -67,6 +67,7 @@ where
         small_rng.gen_range(0..u32::MAX).trailing_ones() as usize
     }
 
+    // expected O(log(n)) time
     fn find_pred_node(&self, x: &T) -> *mut Node<T> {
         let mut u = self.sentinel;
         for r in (0..=self.height).rev() {
@@ -95,6 +96,7 @@ where
         self.n
     }
 
+    // expected O(log(n)) time
     fn add(&mut self, x: T) -> bool {
         let mut u = self.sentinel;
         let h = Self::pick_height(); // 新しく追加するノードの高さ
@@ -137,6 +139,7 @@ where
         true
     }
 
+    // expected O(log(n)) time
     fn remove(&mut self, x: &T) -> bool {
         let mut removed = false;
         let mut del = ptr::null_mut();
@@ -179,6 +182,7 @@ where
         removed
     }
 
+    // expected O(log(n)) time
     fn find(&self, x: &T) -> Option<&T> {
         let u = self.find_pred_node(x);
         let next = unsafe { &*u }.next[0];
