@@ -58,7 +58,13 @@ where
     fn pick_height() -> usize {
         // 毎回 rng を生成しているためパフォーマンスが悪そう
         let mut small_rng = SmallRng::from_entropy();
-        small_rng.gen_range(0..32)
+        // 返り値 : 確率
+        // 0 : 1/2
+        // 1 : 1/4
+        // 2 : 1/8
+        // 3 : 1/16
+        // ...
+        small_rng.gen_range(0..u32::MAX).trailing_ones() as usize
     }
 
     fn find_pred_node(&self, x: &T) -> *mut Node<T> {

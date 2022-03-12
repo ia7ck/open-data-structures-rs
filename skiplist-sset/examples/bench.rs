@@ -39,6 +39,6 @@ fn main() {
     }
     println!("SkipListSSet {} ms", now.elapsed().as_millis());
 
-    // std::collections::BTreeSet 33 ms
-    // SkipListSSet 5853 ms
+    // std::collections::BTreeSet 57 ms
+    // SkipListSSet 664 ms
 }
