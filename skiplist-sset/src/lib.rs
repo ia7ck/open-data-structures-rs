@@ -92,7 +92,7 @@ where
     fn add(&mut self, x: T) -> bool {
         let mut u = self.sentinel;
         let h = Self::pick_height(); // 新しく追加するノードの高さ
-        let mut stack = Vec::new(); // stack ?
+        let mut stack = Vec::new(); // 固定長の配列 self.buf: [*mut Node<T>; 32] を使い回すほうが速くなりそう
         for r in (0..=self.height.max(h)).rev() {
             let exist = loop {
                 let next = unsafe { &*u }.next[r];
