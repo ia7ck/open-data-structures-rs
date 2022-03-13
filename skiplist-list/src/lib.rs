@@ -161,12 +161,15 @@ impl<T> List<T> for SkipListList<T> {
                         del = next;
                         unsafe { (*u).length[r] += (*next).length[r] };
                         unsafe { (*u).next[r] = (*next).next[r] };
-                        if u == self.sentinel && unsafe { (*u).next[r] }.is_null() {
-                            if self.height == 0 {
-                                debug_assert_eq!(self.n, 1);
-                                debug_assert_eq!(r, 0);
-                            } else {
-                                self.height -= 1;
+                        if unsafe { (*u).next[r] }.is_null() {
+                            unsafe { (*u).length[r] = 0 };
+                            if u == self.sentinel {
+                                if self.height == 0 {
+                                    debug_assert_eq!(self.n, 1);
+                                    debug_assert_eq!(r, 0);
+                                } else {
+                                    self.height -= 1;
+                                }
                             }
                         }
                     }
