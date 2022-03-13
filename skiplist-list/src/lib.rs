@@ -219,6 +219,7 @@ where
 mod test {
     use super::SkipListList;
     use interface::List;
+    use rand::{rngs::SmallRng, Rng, SeedableRng};
 
     #[test]
     fn test_get_none() {
@@ -270,5 +271,23 @@ mod test {
         assert_eq!(a, 'a');
 
         assert_eq!(list.size(), 0);
+    }
+
+    #[test]
+    fn test_random() {
+        let mut rng = SmallRng::seed_from_u64(0);
+        let mut v = Vec::new();
+        let mut list = SkipListList::new();
+        for i in 0..100 {
+            let i = rng.gen_range(0..=i);
+            v.insert(i, i);
+            list.add(i, i);
+        }
+        for i in (0..100).rev() {
+            let i = rng.gen_range(0..=i);
+            let x = v.remove(i);
+            let y = list.remove(i);
+            assert_eq!(x, y);
+        }
     }
 }
