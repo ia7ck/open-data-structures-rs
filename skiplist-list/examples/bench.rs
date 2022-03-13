@@ -20,7 +20,7 @@ fn main() {
         dl_list.add(a, a);
     }
     for &a in a.iter().rev() {
-        dl_list.remove(a.saturating_sub(1));
+        dl_list.remove(a);
     }
     println!("DLList {} ms", now.elapsed().as_millis());
 
@@ -30,7 +30,7 @@ fn main() {
         v.insert(a, a);
     }
     for &a in a.iter().rev() {
-        v.remove(a.saturating_sub(1));
+        v.remove(a);
     }
     println!("std::vec::Vec {} ms", now.elapsed().as_millis());
 
@@ -40,7 +40,7 @@ fn main() {
         skip_list.add(a, a);
     }
     for &a in a.iter().rev() {
-        skip_list.remove(a.saturating_sub(1));
+        skip_list.remove(a);
     }
     println!("SkipListList {} ms", now.elapsed().as_millis());
 }
