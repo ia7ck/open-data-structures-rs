@@ -43,4 +43,8 @@ fn main() {
         skip_list.remove(a);
     }
     println!("SkipListList {} ms", now.elapsed().as_millis());
+
+    // DLList 5038 ms
+    // std::vec::Vec 160 ms
+    // SkipListList 48 ms
 }
