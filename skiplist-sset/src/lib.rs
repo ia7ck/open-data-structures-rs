@@ -37,7 +37,7 @@ where
     T: PartialOrd,
 {
     sentinel: *mut Node<T>,
-    height: usize, // 「i <= height iff. sentinel.next[i] が non null」となるようにする
+    height: usize, // height != 0 のとき「i <= height iff. sentinel.next[i] が non null」となるようにする
     n: usize,
 }
 
