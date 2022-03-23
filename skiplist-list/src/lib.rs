@@ -157,6 +157,7 @@ impl<T> List<T> for SkipListList<T> {
                 if next_index >= i {
                     unsafe { (*u).length[r] -= 1 };
                     if next_index == i {
+                       // 最初だけ x.is_none() なので or_else の中が実行されて x.is_some() になるはず
                         x = x.or_else(|| unsafe { (*next).x.take() });
                         del = next;
                         unsafe { (*u).length[r] += (*next).length[r] };
