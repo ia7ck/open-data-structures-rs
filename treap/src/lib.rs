@@ -347,10 +347,54 @@ where
 
 #[cfg(test)]
 mod tests {
-    use super::Treap;
+    use super::{Node, Treap};
     use interface::SSet;
     use rand::{rngs::SmallRng, Rng, SeedableRng};
     use std::collections::BTreeSet;
+    use std::ptr;
+
+    #[test]
+    fn test_rotate() {
+        macro_rules! node {
+            ($x: expr, $left: expr, $right: expr) => {
+                Box::into_raw(Box::new(Node {
+                    x: $x,
+                    priority: 0,
+                    parent: ptr::null_mut(),
+                    left: $left,
+                    right: $right,
+                }))
+            };
+        }
+        let mut treap = Treap::new();
+        let a = node!('a', ptr::null_mut(), ptr::null_mut());
+        let b = node!('b', ptr::null_mut(), ptr::null_mut());
+        let c = node!('c', ptr::null_mut(), ptr::null_mut());
+        let w = node!('w', a, b);
+        let u = node!('u', w, c);
+        let r = node!('r', u, ptr::null_mut());
+        unsafe {
+            (*a).parent = w;
+            (*b).parent = w;
+            (*c).parent = u;
+            (*w).parent = u;
+            (*u).parent = r;
+        };
+        treap.root = r;
+
+        treap.rotate_right(u);
+
+        assert_eq!(unsafe { (*a).parent }, w);
+        assert_eq!(unsafe { (*b).parent }, u);
+        assert_eq!(unsafe { (*c).parent }, u);
+        assert_eq!(unsafe { (*w).parent }, r);
+        assert_eq!(unsafe { (*w).left }, a);
+        assert_eq!(unsafe { (*w).right }, u);
+        assert_eq!(unsafe { (*u).parent }, w);
+        assert_eq!(unsafe { (*u).left }, b);
+        assert_eq!(unsafe { (*u).right }, c);
+        assert_eq!(unsafe { (*r).left }, w);
+    }
 
     #[test]
     fn remove_from_empty_set() {
