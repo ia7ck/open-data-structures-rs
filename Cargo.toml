@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "benchmark",
     "interface",
     "sllist",
     "dllist",
