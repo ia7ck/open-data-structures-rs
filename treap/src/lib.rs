@@ -345,6 +345,24 @@ where
     }
 }
 
+impl<T> Treap<T> {
+    pub fn height(&self) -> usize {
+        use std::collections;
+        let mut max_depth = 0;
+        let mut que = collections::VecDeque::new();
+        que.push_back((self.root, 0));
+        while let Some((u, d)) = que.pop_front() {
+            if u == ptr::null_mut() {
+                continue;
+            }
+            max_depth = max_depth.max(d);
+            que.push_back((unsafe { &*u }.left, d + 1));
+            que.push_back((unsafe { &*u }.right, d + 1));
+        }
+        max_depth
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::{Node, Treap};
