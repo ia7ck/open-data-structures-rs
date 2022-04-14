@@ -13,3 +13,4 @@ dllist = { path = "../dllist" }
 skiplist-list = { path = "../skiplist-list" }
 skiplist-sset = { path = "../skiplist-sset" }
 treap = { path = "../treap" }
+scapegoat-tree = { path = "../scapegoat-tree" }

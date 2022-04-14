@@ -1,9 +1,10 @@
-use interface::SSet;
 use std::{
     alloc,
     cmp::{self, Ordering},
     ptr,
 };
+
+use interface::SSet;
 
 struct Node<T> {
     x: T,
@@ -214,9 +215,13 @@ where
                 }
                 w = left_w;
             }
-            // u を w で置き換える
+            // w を u の位置に持っていく
+            // 関係するポインタを張り替える
             let p_w = unsafe { &*w }.parent;
             if unsafe { &*p_w }.left == w {
+                if unsafe { &*w }.right != ptr::null_mut() {
+                    unsafe { (*(*w).right).parent = p_w };
+                }
                 unsafe { (*p_w).left = (*w).right };
                 unsafe { (*w).left = left_u };
                 unsafe { (*w).right = right_u };
@@ -282,7 +287,6 @@ where
     fn remove(&mut self, x: &T) -> bool {
         let u = self.find_last(x);
         if u != ptr::null_mut() && unsafe { &*u }.x.eq(x) {
-            eprintln!("remove u = {:p}", u);
             self.remove_u(u);
             if self.q > self.n * 2 {
                 if self.root != ptr::null_mut() {
@@ -365,25 +369,24 @@ mod tests {
     }
 
     #[test]
-    fn test_random() {
+    fn test_large() {
         let mut rng = SmallRng::seed_from_u64(0);
         let mut scapegoat_tree = ScapegoatTree::new();
         let mut btree = BTreeSet::new();
-        let n = 50;
-        for _ in 0..n {
-            let x = rng.gen_range(0..100_u32);
+        let n = 100;
+        for x in 0..n {
             let added_1 = scapegoat_tree.add(x);
             let added_2 = btree.insert(x);
             assert_eq!(added_1, added_2);
         }
-        for x in 0..n {
+        for _ in 0..n {
+            let x = rng.gen_range(0..n);
             let y1 = scapegoat_tree.find(&x);
             let y2 = btree.range(x..).next();
             assert_eq!(y1, y2);
         }
         for _ in 0..n {
-            let x = rng.gen_range(0..100_u32);
-            eprintln!("remove {}", x);
+            let x = rng.gen_range(0..n);
             let removed_1 = scapegoat_tree.remove(&x);
             let removed_2 = btree.remove(&x);
             assert_eq!(removed_1, removed_2);
