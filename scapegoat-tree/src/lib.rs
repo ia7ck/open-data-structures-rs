@@ -16,7 +16,7 @@ struct Node<T> {
 pub struct ScapegoatTree<T> {
     n: usize,
     root: *mut Node<T>,
-    q: usize,
+    q: usize, // n/2 <= q <= n
 }
 
 impl<T> ScapegoatTree<T> {
@@ -28,6 +28,7 @@ impl<T> ScapegoatTree<T> {
         }
     }
 
+    // O(n) time
     fn size_u(u: *mut Node<T>) -> usize {
         if u == ptr::null_mut() {
             0
@@ -36,6 +37,8 @@ impl<T> ScapegoatTree<T> {
         }
     }
 
+    // u を根とする部分木を完全二分木にする
+    // O(n) time
     fn rebuild(&mut self, u: *mut Node<T>) {
         let p = unsafe { &*u }.parent;
         // u を根とする部分木のサイズで Vec の capacity を確保すると速くなるかも
@@ -57,6 +60,8 @@ impl<T> ScapegoatTree<T> {
         }
     }
 
+    // u を根とする部分木のすべてのノードをキーの昇順に返す
+    // O(n) time
     fn collect_descendants(u: *mut Node<T>) -> Vec<*mut Node<T>> {
         if u == ptr::null_mut() {
             return Vec::new();
@@ -68,6 +73,9 @@ impl<T> ScapegoatTree<T> {
         result
     }
 
+    // キーの昇順に並んだノードの列を完全二分木になるようにポインタを張る
+    // 作られた完全二分木の根を返す
+    // O(n) time
     fn build_balanced(nodes: &[*mut Node<T>]) -> *mut Node<T> {
         if nodes.is_empty() {
             return ptr::null_mut();
@@ -91,6 +99,9 @@ impl<T> ScapegoatTree<T>
 where
     T: cmp::Ord,
 {
+    // x がキーのノードを挿入して、ノードとその深さを返す
+    // すでに scapegoat 木に x が含まれていたら None を返す
+    // O(log(n)) time
     fn add_with_depth(&mut self, x: T) -> Option<(*mut Node<T>, usize)> {
         let mut w = self.root;
         let mut depth = 0;
@@ -153,6 +164,7 @@ where
     }
 
     // copy of Treap::find_last
+    // O(log(n)) time
     fn find_last(&self, x: &T) -> *mut Node<T> {
         let mut w = self.root;
         let mut prev = ptr::null_mut();
@@ -173,6 +185,8 @@ where
         prev
     }
 
+    // u を削除する
+    // O(log(n)) time
     fn remove_u(&mut self, u: *mut Node<T>) {
         debug_assert_ne!(u, ptr::null_mut());
         let left_u = unsafe { &*u }.left;
@@ -260,6 +274,7 @@ where
         self.n
     }
 
+    // amortized O(log(n)) time
     fn add(&mut self, x: T) -> bool {
         if let Some((u, depth)) = self.add_with_depth(x) {
             if depth as f64 > (self.q as f64).log(3.0 / 2.0) {
@@ -284,6 +299,7 @@ where
         }
     }
 
+    // amortized O(log(n)) time
     fn remove(&mut self, x: &T) -> bool {
         let u = self.find_last(x);
         if u != ptr::null_mut() && unsafe { &*u }.x.eq(x) {
@@ -301,6 +317,7 @@ where
     }
 
     // copy of Treap::find
+    // O(log(n)) time
     fn find(&self, x: &T) -> Option<&T> {
         let mut w = self.root;
         let mut z = ptr::null_mut();
