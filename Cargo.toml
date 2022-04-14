@@ -7,4 +7,5 @@ members = [
     "skiplist-sset",
     "skiplist-list",
     "treap",
+    "scapegoat-tree",
 ]
