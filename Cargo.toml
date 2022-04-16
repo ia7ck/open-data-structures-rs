@@ -8,4 +8,5 @@ members = [
     "skiplist-list",
     "treap",
     "scapegoat-tree",
+    "binary-trie",
 ]
